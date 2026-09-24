@@ -42,9 +42,36 @@ pub enum Commands {
     /// View or configure API credentials and defaults
     Config(ConfigArgs),
 
+    /// Log in and store Namecheap API credentials
+    Login(LoginArgs),
+
     /// Look up your current public IP address (useful for Namecheap API IP whitelisting)
     Ip,
 }
+
+#[derive(Args, Debug, Clone)]
+pub struct LoginArgs {
+    /// Namecheap API username
+    #[arg(short = 'u', long)]
+    pub api_user: Option<String>,
+
+    /// Namecheap API key
+    #[arg(short = 'k', long)]
+    pub api_key: Option<String>,
+
+    /// Read API key from stdin
+    #[arg(long)]
+    pub api_key_stdin: bool,
+
+    /// Whitelisted client IP address
+    #[arg(long)]
+    pub client_ip: Option<String>,
+
+    /// Default to sandbox environment
+    #[arg(long)]
+    pub sandbox: bool,
+}
+
 
 #[derive(Args, Debug)]
 pub struct DomainsArgs {

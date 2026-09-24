@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use clap::Parser;
 
 use namecheap_cli::cli::{
-    Cli, Commands, ConfigCommands, DnsCommands, DomainCommands,
+    Cli, Commands, ConfigCommands, DnsCommands, DomainCommands, LoginArgs,
 };
 use namecheap_cli::client::NamecheapClient;
 use namecheap_cli::config::NamecheapConfig;
@@ -14,8 +14,10 @@ async fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
+        Commands::Login(login_args) => handle_login_command(login_args)?,
         Commands::Config(config_args) => handle_config_command(config_args)?,
         Commands::Ip => handle_ip_command(cli.json).await?,
+
         Commands::Domains(domains_args) => {
             let config = NamecheapConfig::resolve(
                 cli.api_user,
@@ -248,3 +250,35 @@ async fn handle_ip_command(json: bool) -> Result<()> {
     }
     Ok(())
 }
+
+fn handle_login_command(args: LoginArgs) -> Result<()> {
+    let mut file_config = NamecheapConfig::load_file();
+
+    let key = if args.api_key_stdin {
+        use std::io::Read;
+        let mut buf = String::new();
+        std::io::stdin().read_to_string(&mut buf)?;
+        let trimmed = buf.trim().to_string();
+        if trimmed.is_empty() { None } else { Some(trimmed) }
+    } else {
+        args.api_key
+    };
+
+    if let Some(u) = args.api_user {
+        file_config.api_user = Some(u);
+    }
+    if let Some(k) = key {
+        file_config.api_key = Some(k);
+    }
+    if let Some(ip) = args.client_ip {
+        file_config.client_ip = Some(ip);
+    }
+    if args.sandbox {
+        file_config.sandbox = Some(true);
+    }
+
+    let path = NamecheapConfig::save_file(&file_config)?;
+    println!("✓ Saved Namecheap credentials to {}", path.display());
+    Ok(())
+}
+
