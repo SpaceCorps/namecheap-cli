@@ -1,0 +1,16 @@
+# Namecheap CLI
+
+> High-performance native Rust command-line tool and autonomous agent interface for Namecheap API.
+
+## Core Capabilities
+- Check domain availability and premium pricing: `namecheap-cli domains check <domain...>`
+- List registered domains: `namecheap-cli domains list [--search <query>]`
+- Inspect domain configuration: `namecheap-cli domains info --domain <domain>`
+- List DNS host records: `namecheap-cli dns list --domain <domain>`
+- Add DNS record: `namecheap-cli dns add-host --domain <domain> --record-type <TYPE> --host-name <NAME> --address <IP> --ttl <SECONDS>`
+- Detect public egress IP for whitelisting: `namecheap-cli ip`
+- Login and persist credentials: `namecheap-cli login --api-user <USER> --api-key <KEY> --client-ip <IP>`
+
+All commands support `--json` for machine consumption.
+Documentation: https://spacecorps.github.io/namecheap-cli/
+Repository: https://github.com/SpaceCorps/namecheap-cli
