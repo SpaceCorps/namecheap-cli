@@ -47,8 +47,9 @@ impl NamecheapConfig {
     pub fn save_file(config: &ConfigFile) -> Result<PathBuf> {
         let path = Self::config_path()?;
         if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)
-                .with_context(|| format!("Failed to create config directory: {}", parent.display()))?;
+            fs::create_dir_all(parent).with_context(|| {
+                format!("Failed to create config directory: {}", parent.display())
+            })?;
         }
         let content = serde_json::to_string_pretty(config)?;
         fs::write(&path, content)

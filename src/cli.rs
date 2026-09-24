@@ -72,7 +72,6 @@ pub struct LoginArgs {
     pub sandbox: bool,
 }
 
-
 #[derive(Args, Debug)]
 pub struct DomainsArgs {
     #[command(subcommand)]

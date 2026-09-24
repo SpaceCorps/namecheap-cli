@@ -109,10 +109,7 @@ impl NamecheapClient {
     /// Set DNS host records for a domain (replaces all existing records)
     pub async fn set_dns_hosts(&self, domain: &str, records: &[DnsHostRecord]) -> Result<bool> {
         let (sld, tld) = split_domain(domain);
-        let mut params: Vec<(String, String)> = vec![
-            ("SLD".into(), sld),
-            ("TLD".into(), tld),
-        ];
+        let mut params: Vec<(String, String)> = vec![("SLD".into(), sld), ("TLD".into(), tld)];
 
         for (idx, record) in records.iter().enumerate() {
             let i = idx + 1;
@@ -500,7 +497,10 @@ mod tests {
 
     #[test]
     fn test_split_domain() {
-        assert_eq!(split_domain("example.com"), ("example".into(), "com".into()));
+        assert_eq!(
+            split_domain("example.com"),
+            ("example".into(), "com".into())
+        );
         assert_eq!(
             split_domain("sub.example.com"),
             ("example".into(), "com".into())
@@ -530,7 +530,10 @@ mod tests {
 
         let err = check_api_response_errors(error_xml).unwrap_err();
         assert!(err.to_string().contains("2011166"));
-        assert!(err.to_string().contains("Client IP address is not whitelisted"));
+        assert!(
+            err.to_string()
+                .contains("Client IP address is not whitelisted")
+        );
 
         let ok_xml = r#"<?xml version="1.0" encoding="utf-8"?>
 <ApiResponse Status="OK" xmlns="http://api.namecheap.com/xml.response">

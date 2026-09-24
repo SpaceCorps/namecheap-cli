@@ -7,14 +7,13 @@ pub fn print_domain_check(results: &[DomainCheckResult], json: bool) -> Result<(
         return Ok(());
     }
 
-    println!("{:<35} {:<15} {:<10} {:<15}", "DOMAIN", "STATUS", "PREMIUM", "PRICE");
+    println!(
+        "{:<35} {:<15} {:<10} {:<15}",
+        "DOMAIN", "STATUS", "PREMIUM", "PRICE"
+    );
     println!("{:-<75}", "");
     for res in results {
-        let status = if res.available {
-            "AVAILABLE"
-        } else {
-            "TAKEN"
-        };
+        let status = if res.available { "AVAILABLE" } else { "TAKEN" };
         let premium = if res.is_premium { "YES" } else { "NO" };
         let price = if let Some(p) = res.premium_registration_price {
             format!("${:.2}", p)
@@ -85,9 +84,26 @@ pub fn print_domain_info(info: &DomainInfo, json: bool) -> Result<()> {
     println!("  Status:           {}", info.status);
     println!("  Created:          {}", info.created_date);
     println!("  Expires:          {}", info.expired_date);
-    println!("  Locked:           {}", if info.is_locked { "Yes" } else { "No" });
-    println!("  WhoisGuard:       {}", if info.whois_guard_enabled { "Enabled" } else { "Disabled" });
-    println!("  Using Our DNS:    {}", if info.is_using_our_dns { "Yes (Namecheap BasicDNS)" } else { "No (Custom DNS)" });
+    println!(
+        "  Locked:           {}",
+        if info.is_locked { "Yes" } else { "No" }
+    );
+    println!(
+        "  WhoisGuard:       {}",
+        if info.whois_guard_enabled {
+            "Enabled"
+        } else {
+            "Disabled"
+        }
+    );
+    println!(
+        "  Using Our DNS:    {}",
+        if info.is_using_our_dns {
+            "Yes (Namecheap BasicDNS)"
+        } else {
+            "No (Custom DNS)"
+        }
+    );
     println!("  Nameservers ({}):", info.nameservers.len());
     for ns in &info.nameservers {
         println!("    - {}", ns);
@@ -117,8 +133,14 @@ pub fn print_dns_hosts(domain: &str, hosts: &[DnsHostRecord], json: bool) -> Res
     );
     println!("{:-<88}", "");
     for h in hosts {
-        let id_str = h.host_id.map(|id| id.to_string()).unwrap_or_else(|| "-".into());
-        let mx_str = h.mx_pref.map(|mx| mx.to_string()).unwrap_or_else(|| "-".into());
+        let id_str = h
+            .host_id
+            .map(|id| id.to_string())
+            .unwrap_or_else(|| "-".into());
+        let mx_str = h
+            .mx_pref
+            .map(|mx| mx.to_string())
+            .unwrap_or_else(|| "-".into());
         println!(
             "{:<8} {:<15} {:<10} {:<35} {:<8} {:<8}",
             id_str, h.name, h.record_type, h.address, mx_str, h.ttl

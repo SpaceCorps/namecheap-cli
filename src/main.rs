@@ -1,9 +1,7 @@
 use anyhow::{Context, Result};
 use clap::Parser;
 
-use namecheap_cli::cli::{
-    Cli, Commands, ConfigCommands, DnsCommands, DomainCommands, LoginArgs,
-};
+use namecheap_cli::cli::{Cli, Commands, ConfigCommands, DnsCommands, DomainCommands, LoginArgs};
 use namecheap_cli::client::NamecheapClient;
 use namecheap_cli::config::NamecheapConfig;
 use namecheap_cli::models::DnsHostRecord;
@@ -19,12 +17,8 @@ async fn main() -> Result<()> {
         Commands::Ip => handle_ip_command(cli.json).await?,
 
         Commands::Domains(domains_args) => {
-            let config = NamecheapConfig::resolve(
-                cli.api_user,
-                cli.api_key,
-                cli.client_ip,
-                cli.sandbox,
-            )?;
+            let config =
+                NamecheapConfig::resolve(cli.api_user, cli.api_key, cli.client_ip, cli.sandbox)?;
             let client = NamecheapClient::new(config);
 
             match domains_args.command {
@@ -50,12 +44,8 @@ async fn main() -> Result<()> {
             }
         }
         Commands::Dns(dns_args) => {
-            let config = NamecheapConfig::resolve(
-                cli.api_user,
-                cli.api_key,
-                cli.client_ip,
-                cli.sandbox,
-            )?;
+            let config =
+                NamecheapConfig::resolve(cli.api_user, cli.api_key, cli.client_ip, cli.sandbox)?;
             let client = NamecheapClient::new(config);
 
             match dns_args.command {
@@ -164,7 +154,10 @@ fn handle_config_command(args: namecheap_cli::cli::ConfigArgs) -> Result<()> {
             println!("Configuration File: {}", config_path.display());
             println!(
                 "  API User:  {}",
-                file_config.api_user.as_deref().unwrap_or("<not configured>")
+                file_config
+                    .api_user
+                    .as_deref()
+                    .unwrap_or("<not configured>")
             );
             println!(
                 "  API Key:   {}",
@@ -243,9 +236,7 @@ async fn handle_ip_command(json: bool) -> Result<()> {
         println!("{}", serde_json::json!({ "public_ip": ip_obj.ip }));
     } else {
         println!("Public IP: {}", ip_obj.ip);
-        println!(
-            "\nNote: Make sure this IP is whitelisted in your Namecheap API access settings:"
-        );
+        println!("\nNote: Make sure this IP is whitelisted in your Namecheap API access settings:");
         println!("  https://ap.www.namecheap.com/settings/tools/apiaccess/whitelisted-ips");
     }
     Ok(())
@@ -259,7 +250,11 @@ fn handle_login_command(args: LoginArgs) -> Result<()> {
         let mut buf = String::new();
         std::io::stdin().read_to_string(&mut buf)?;
         let trimmed = buf.trim().to_string();
-        if trimmed.is_empty() { None } else { Some(trimmed) }
+        if trimmed.is_empty() {
+            None
+        } else {
+            Some(trimmed)
+        }
     } else {
         args.api_key
     };
@@ -281,4 +276,3 @@ fn handle_login_command(args: LoginArgs) -> Result<()> {
     println!("✓ Saved Namecheap credentials to {}", path.display());
     Ok(())
 }
-
